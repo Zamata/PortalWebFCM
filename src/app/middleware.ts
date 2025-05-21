@@ -3,14 +3,17 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const authToken = request.cookies.get('auth_token')?.value;
   const protectedRoutes = ['/admin'];
 
   if (protectedRoutes.some(route => pathname.startsWith(route))) {
-    const authToken = request.cookies.get('auth_token')?.value;
+    
 
     if (!authToken) {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
-    }
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 
     try {
       // Verificar el token con el backend
@@ -38,3 +41,9 @@ export async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|logo.png).*)',
+  ],
+};
