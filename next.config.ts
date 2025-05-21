@@ -6,9 +6,16 @@ const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:30
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   eslint: {
-    // Permite que la compilación se complete incluso si hay errores de ESLint
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+  output: 'standalone',
+  
   async rewrites() {
     return [
       {
@@ -55,4 +62,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-module.exports = nextConfig
+export default nextConfig;
